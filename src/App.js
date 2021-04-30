@@ -198,7 +198,6 @@ function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, hand
             {foundWords.map(word => {
               return <FoundText>{`${word}, `}</FoundText>
             })}
-          <Triangle />
           </Found>
           <InputText>
             {bufferText}
