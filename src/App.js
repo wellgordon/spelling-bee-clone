@@ -64,7 +64,7 @@ const CenterCircle = styled(Circle)`
   background: gold;
 `
 
-const Text = styled.p`
+const InputText = styled.p`
   margin-bottom: 2rem;
   height: 3rem;
   width: 20rem;
@@ -75,11 +75,35 @@ const Text = styled.p`
   text-align: center;
 `
 const Found = styled.div`
-  height: 6rem;
+  height: 3rem;
   width: 20rem;
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
+  font-weight: bold;
+  border: 1px solid gray;
+  border-radius: 5px;
+
+`
+const FoundText = styled.p`
+  margin-left: .3rem;
+`
+
+const Triangle = styled.div`
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+
+  border-top: 10px solid black;
+  position: relative;
+  left: 94%;
+  top: 75%;
+
+  &:hover {
+    cursor: pointer;
+    border-top: 10px solid gray;
+  }
 `
 
 const Button = styled.button`
@@ -172,12 +196,13 @@ function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, hand
         <SubContainer>
           <Found>
             {foundWords.map(word => {
-              return <p>{`${word}, `}</p>
+              return <FoundText>{`${word}, `}</FoundText>
             })}
+          <Triangle />
           </Found>
-          <Text>
+          <InputText>
             {bufferText}
-          </Text>
+          </InputText>
           <Game>
             <SideColumn>
               <Circle onClick={handleClick}>
@@ -230,7 +255,6 @@ function App() {
   const [bufferText, setBufferText] = useState('')
   const [isSpecialLetter, setIsSpecialLetter] = useState(false)
   const [foundWords, setFoundWords] = useState([])
-  const [submitted, setSubmitted] = useState(false)
 
   function handleClick(e) {
 
@@ -238,7 +262,7 @@ function App() {
       setBufferText('Too Long!')
       setTimeout(() => {
         setBufferText('')
-      }, 1000);
+      }, 500);
     } else {
       setBufferText(bufferText + e.target.innerText)
     }
@@ -253,49 +277,40 @@ function App() {
     setBufferText('')
   }
 
-  function handleNotSubmit() {
-    if(!submitted) {
-      setBufferText('Sorry, not a word...')
-      setTimeout(() => {
-        setBufferText('')
-      }, 1000);
-    } else {
-      setSubmitted(false)
-    }
-  }
-
   function handleSubmit() {
     if(bufferText.length < 4) {
       setBufferText('Too short!')
       setIsSpecialLetter(false)
       setTimeout(() => {
         setBufferText('')
-      }, 1000);
+      }, 500);
     } else if(!isSpecialLetter) {
-      setBufferText('Need to use letter of the day!')
-      setTimeout(() => {
-        setBufferText('')
-      }, 1000);
-    } else {
-      foundWords.forEach(word => {
-        if(bufferText === word.toUpperCase()) {
+        setBufferText('Need to use letter of the day!')
+        setTimeout(() => {
+          setBufferText('')
+        }, 500);
+      } else if(foundWords.includes(bufferText)) {
           setBufferText('Oops, already got that one!')
+          setIsSpecialLetter(false)
           setTimeout(() => {
             setBufferText('')
-          }, 1000);
+          }, 500);
+        } else {
+            if(words.includes(bufferText.toLowerCase())) { 
+              setFoundWords([...foundWords, bufferText])      
+              setIsSpecialLetter(false)
+              setBufferText('')
+            } else {
+                setBufferText('Sorry, not a word...')
+                setIsSpecialLetter(false)
+                setTimeout(() => {
+                  setBufferText('')
+                }, 500);
+            }  
         }
-      })
-      words.forEach(word => {
-        if(bufferText.toLowerCase() === word) { 
-          setFoundWords([...foundWords, bufferText])      
-          setSubmitted(true)
-          setIsSpecialLetter(false)
-          setBufferText('')
-        } 
-      })
     }   
-    //handleNotSubmit() 
-  }
+    
+  
 
   return (
     <GameUi handleClick={handleClick} 
