@@ -74,21 +74,7 @@ const InputText = styled.p`
   font-weight: bold;
   text-align: center;
 `
-const Found = styled.div`
-  height: 3rem;
-  width: 20rem;
-  padding: .2rem;
-  margin-top: 1rem;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  font-weight: bold;
-  border: 1px solid gray;
-  border-radius: 5px;
-  overflow: hidden;
 
-`
 const FoundText = styled.p`
   margin-left: .3rem;
 `
@@ -228,7 +214,7 @@ function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, hand
   const [accordion, setAccordion] = useState('')
 
   function toggle() {
-    if(open) {
+    if (open) {
       setOpen(false)
       setAccordion('')
     } else {
@@ -242,11 +228,11 @@ function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, hand
       <MainContainer>
         <SubContainer>
           <Accordion className={accordion}>
-              {open === false ? foundWords.filter((word, index) => index < 5).map(word => {
-                return <FoundText>{`${word}, `}</FoundText>
-              }) : foundWords.map(word => {
-                return <FoundText>{`${word}, `}</FoundText>
-              })}             
+            {open === false ? foundWords.filter((word, index) => index < 5).map(word => {
+              return <FoundText>{`${word}, `}</FoundText>
+            }) : foundWords.map(word => {
+              return <FoundText>{`${word}, `}</FoundText>
+            })}
           </Accordion>
           <span onClick={toggle}>
             {open === true ? <TriangleUp /> : <TriangleDown />}
@@ -291,7 +277,7 @@ function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, hand
               Clear
             </Button>
           </ButtonContainer>
-          
+
         </SubContainer>
       </MainContainer>
 
@@ -309,7 +295,7 @@ function App() {
 
   function handleClick(e) {
 
-    if(bufferText.length > 10) {
+    if (bufferText.length > 10) {
       setBufferText('Too Long!')
       setTimeout(() => {
         setBufferText('')
@@ -329,45 +315,45 @@ function App() {
   }
 
   function handleSubmit() {
-    if(bufferText.length < 4) {
+    if (bufferText.length < 4) {
       setBufferText('Too short!')
       setIsSpecialLetter(false)
       setTimeout(() => {
         setBufferText('')
       }, 500);
-    } else if(!isSpecialLetter) {
-        setBufferText('Need to use letter of the day!')
+    } else if (!isSpecialLetter) {
+      setBufferText('Need to use letter of the day!')
+      setTimeout(() => {
+        setBufferText('')
+      }, 500);
+    } else if (foundWords.includes(bufferText)) {
+      setBufferText('Oops, already got that one!')
+      setIsSpecialLetter(false)
+      setTimeout(() => {
+        setBufferText('')
+      }, 500);
+    } else {
+      if (words.includes(bufferText.toLowerCase())) {
+        setFoundWords([...foundWords, bufferText])
+        setIsSpecialLetter(false)
+        setBufferText('')
+      } else {
+        setBufferText('Sorry, not a word...')
+        setIsSpecialLetter(false)
         setTimeout(() => {
           setBufferText('')
         }, 500);
-      } else if(foundWords.includes(bufferText)) {
-          setBufferText('Oops, already got that one!')
-          setIsSpecialLetter(false)
-          setTimeout(() => {
-            setBufferText('')
-          }, 500);
-        } else {
-            if(words.includes(bufferText.toLowerCase())) { 
-              setFoundWords([...foundWords, bufferText])      
-              setIsSpecialLetter(false)
-              setBufferText('')
-            } else {
-                setBufferText('Sorry, not a word...')
-                setIsSpecialLetter(false)
-                setTimeout(() => {
-                  setBufferText('')
-                }, 500);
-            }  
-        }
-    }   
+      }
+    }
+  }
 
   return (
-    <GameUi handleClick={handleClick} 
-            handleCenterClick={handleCenterClick}
-            bufferText={bufferText} 
-            handleClear={handleClear} 
-            handleSubmit={handleSubmit} 
-            foundWords={foundWords}
+    <GameUi handleClick={handleClick}
+      handleCenterClick={handleCenterClick}
+      bufferText={bufferText}
+      handleClear={handleClear}
+      handleSubmit={handleSubmit}
+      foundWords={foundWords}
     />
   );
 }
