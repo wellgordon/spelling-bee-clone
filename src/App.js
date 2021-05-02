@@ -77,19 +77,23 @@ const InputText = styled.p`
 const Found = styled.div`
   height: 3rem;
   width: 20rem;
+  padding: .2rem;
+  margin-top: 1rem;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  align-content: flex-start;
   font-weight: bold;
   border: 1px solid gray;
   border-radius: 5px;
+  overflow: hidden;
 
 `
 const FoundText = styled.p`
   margin-left: .3rem;
 `
 
-const Triangle = styled.div`
+const TriangleDown = styled.div`
   width: 0; 
   height: 0; 
   border-left: 10px solid transparent;
@@ -97,12 +101,29 @@ const Triangle = styled.div`
 
   border-top: 10px solid black;
   position: relative;
-  left: 94%;
-  top: 75%;
+  left: 50%;
+  bottom: 100%;
 
   &:hover {
     cursor: pointer;
     border-top: 10px solid gray;
+  }
+`
+
+const TriangleUp = styled.div`
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+
+  border-bottom: 10px solid black;
+  position: relative;
+  left: 50%;
+  bottom: 100%;
+
+  &:hover {
+    cursor: pointer;
+    border-bottom: 10px solid gray;
   }
 `
 
@@ -128,6 +149,19 @@ const ButtonContainer = styled.div`
   align-items; flex-start;
   justify-content: flex-end;
   margin-bottom: 2rem;
+`
+
+const Accordion = styled.div`
+  width: 20rem;
+  padding: .2rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  font-weight: bold;
+  border: 1px solid gray;
+  border-radius: 5px;
 `
 
 const words = [
@@ -190,15 +224,33 @@ const words = [
 //Game UI
 function GameUi({ handleClick, handleCenterClick, bufferText, handleSubmit, handleClear, foundWords }) {
 
+  const [open, setOpen] = useState(false)
+  const [accordion, setAccordion] = useState('')
+
+  function toggle() {
+    if(open) {
+      setOpen(false)
+      setAccordion('')
+    } else {
+      setOpen(true)
+      setAccordion('found-word-box')
+    }
+  }
+
   return (
     <>
       <MainContainer>
         <SubContainer>
-          <Found>
-            {foundWords.map(word => {
-              return <FoundText>{`${word}, `}</FoundText>
-            })}
-          </Found>
+          <Accordion className={accordion}>
+              {open === false ? foundWords.filter((word, index) => index < 5).map(word => {
+                return <FoundText>{`${word}, `}</FoundText>
+              }) : foundWords.map(word => {
+                return <FoundText>{`${word}, `}</FoundText>
+              })}             
+          </Accordion>
+          <span onClick={toggle}>
+            {open === true ? <TriangleUp /> : <TriangleDown />}
+          </span>
           <InputText>
             {bufferText}
           </InputText>
@@ -308,8 +360,6 @@ function App() {
             }  
         }
     }   
-    
-  
 
   return (
     <GameUi handleClick={handleClick} 
